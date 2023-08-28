@@ -16,7 +16,9 @@ type ZohoResponse record {|
     |} details;
 |};
 
-final http:Client zohoClient = check new ("http://content.zohoapis.com.balmock.io");
+final http:Client zohoClient = check new ("http://content.zohoapis.com.balmock.io",
+    retryConfig = {count: 3, interval: 1, statusCodes: [404, 408, 500]}
+);
 
 service /crm on new http:Listener(8080) {
     resource function post bulkUploadLeads(CsvRequest csvRequest) returns ZohoResponse|error {
